@@ -8,7 +8,7 @@
   },
   "states": {
     "semantic_review": {
-      "state": "PENDING",
+      "state": "PASS",
       "meaning": "Independent review of the model's structure and claims is complete and its findings are resolved or explicitly accepted."
     },
     "coauthor_approval": {
