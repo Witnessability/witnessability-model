@@ -3,9 +3,21 @@
 Canonical, reproducible publication repository for the **Witnessability Model (WM)** and its
 accompanying paper.
 
-> **Status of this repository:** infrastructure preparation. The WM 1.1 objects held here are
-> **unreleased review baselines** under an **active release hold**. Nothing in this repository
-> constitutes a release, a deposit, or a publication.
+## Witnessability Model 1.1 — current released version
+
+| | |
+| --- | --- |
+| **Read the paper** | **[`releases/1.1/WM-1.1.pdf`](releases/1.1/WM-1.1.pdf)** — 25 pages |
+| **Cite this version** | **[10.5281/zenodo.21970802](https://doi.org/10.5281/zenodo.21970802)** |
+| Cite the work as a whole | [10.5281/zenodo.21824435](https://doi.org/10.5281/zenodo.21824435) — concept DOI, always resolves to the latest version |
+| Errata | [`releases/1.1/WM-1.1-ERRATA-SCHEME-B-FINAL.md`](releases/1.1/WM-1.1-ERRATA-SCHEME-B-FINAL.md) |
+| Release | tag [`wm-v1.1.0`](../../releases/tag/wm-v1.1.0), released 2026-08-16 |
+| Source | [`paper/witnessability-model/src/main.tex`](paper/witnessability-model/src/main.tex) |
+| Build it yourself | `make paper` — reproduces the released PDF byte for byte |
+| Release record | [`releases/1.1/README.md`](releases/1.1/README.md) |
+
+The previous version remains published: [`releases/1.0/RELEASE-RECORD.md`](releases/1.0/RELEASE-RECORD.md),
+DOI [10.5281/zenodo.21824436](https://doi.org/10.5281/zenodo.21824436).
 
 ## Repository role
 
@@ -54,21 +66,20 @@ never silently promoted from one role to the next.
 ## Layout
 
 ```
-model/                          immutable imported baselines, by model version
-  1.0/                          canonical published WM 1.0 artifact
-  1.1/                          WM 1.1 review baseline (UNRELEASED)
+model/1.0/WM-1.0.pdf            the published Version 1.0 artifact, kept for provenance
 paper/witnessability-model/     working source lineage
   src/main.tex                  paper source
   bibliography/references.bib   bibliography source of truth
   figures/                      figure sources (none yet; the paper is TikZ-only)
   metadata.yaml                 title, authors, ORCIDs, keywords, version identity
   CHANGELOG.md                  paper-revision changelog
-releases/                       release artifacts and receipts, by version
+releases/                       released artifacts and their records, by version
+  1.0/                          record of the published 1.0 release
+  1.1/                          the released PDF, its errata and their digests
 tooling/                        pinned toolchain definition (image + digest)
 scripts/                        build and QA entry points
-schemas/                        JSON schemas for manifests
 publication/                    governance, workflows, baselines, QA reports
-.github/workflows/              CI, release-candidate, inert release, verification
+.github/workflows/              CI and read-only publication verification
 build/                          build output only — git-ignored, never a source
 ```
 
@@ -101,16 +112,16 @@ See [`publication/VERSIONING.md`](publication/VERSIONING.md) for the tag naming 
 
 | Item | State |
 | ---- | ----- |
-| WM 1.0 | Published. Canonical artifact imported as historical baseline. Not modifiable. |
-| WM 1.1 | **UNRELEASED REVIEW BASELINE — RELEASE HOLD ACTIVE** |
-| Release tag | none |
-| GitHub release | none |
-| SSRN revision | not submitted |
-| Zenodo deposit | not made |
+| WM 1.0 | Published 2026-06-25 · DOI 10.5281/zenodo.21824436 · not modifiable |
+| WM 1.1 | **Published 2026-08-16** · DOI 10.5281/zenodo.21970802 |
+| Release tag | `wm-v1.1.0` |
+| GitHub release | Witnessability Model 1.1 |
+| Zenodo deposit | made — new version under the same concept DOI |
+| Repository licence | **not yet declared** — see `LICENSES/NOTICE.md` |
 
-WM 1.1 release blockers are tracked in
-[`publication/RELEASE-STATE-PUBLIC.json`](publication/RELEASE-STATE-PUBLIC.json), which carries four
-generic states. No state may be `PASS` without the corresponding prerequisites being satisfied.
+Release state is machine-readable in
+[`publication/RELEASE-STATE-PUBLIC.json`](publication/RELEASE-STATE-PUBLIC.json): four generic
+states, all `PASS` for 1.1, plus the release identities.
 
 ## Licensing
 

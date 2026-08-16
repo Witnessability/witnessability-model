@@ -57,7 +57,6 @@ def main() -> int:
     dirty = git("status", "--porcelain") not in ("", "UNAVAILABLE")
 
     manifest = {
-        "schema": "schemas/build-manifest.schema.json",
         "generated_at": _dt.datetime.now(_dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
 
         "source": {

@@ -1,11 +1,38 @@
 {
-  "_comment": "Public release-state interface. This file is the ONLY release-gating input the public repository consumes. It carries four generic states and no case history: which reviews were run, by whom, under which internal identifiers, and against which evidence is deliberately not represented here. A state is PASS only when the corresponding private evidence legitimately supports it; the default is PENDING and the interface is fail-closed.",
+  "_comment": "Public release-state interface. It carries generic states and no case history: which reviews ran, by whom, and against which internal evidence is deliberately not represented here. A state is PASS only when the corresponding prerequisite is satisfied; the default is PENDING and the interface is fail-closed.",
+
   "schema_version": "1",
   "subject": {
     "model_version": "1.1",
     "paper_revision": "1.1",
-    "candidate": "WM 1.1 RC002"
+    "status": "RELEASED"
   },
+
+  "release": {
+    "released": true,
+    "release_date": "2026-08-16",
+    "tag": "wm-v1.1.0",
+    "commit": "e4f3985a6d1ebcdbe9920bebbc8ba86702e34969",
+    "artifact": {
+      "path": "releases/1.1/WM-1.1.pdf",
+      "bytes": 490909,
+      "sha256": "7d62e3268e930d5ad16aa97bd05eb037e15a08274487194041cafd78167fb902",
+      "md5": "50f0eba967840a67d3e7a04786d853f0"
+    },
+    "errata": {
+      "path": "releases/1.1/WM-1.1-ERRATA-SCHEME-B-FINAL.md",
+      "bytes": 9397,
+      "sha256": "8ae0ac5f7ff46aac25770888e5194f276acb48eaeb21949135f5c2fab15450b9"
+    },
+    "version_doi": "10.5281/zenodo.21970802",
+    "concept_doi": "10.5281/zenodo.21824435",
+    "distribution": [
+      "Zenodo — archival copy of record and citable identifier",
+      "GitHub release wm-v1.1.0 — distribution copy",
+      "releases/1.1/ in this repository — discoverable copy, digest-checked in CI"
+    ]
+  },
+
   "states": {
     "semantic_review": {
       "state": "PASS",
@@ -13,28 +40,29 @@
     },
     "coauthor_approval": {
       "state": "PASS",
-      "meaning": "Every co-author has consented to the release of this exact artifact, identified by digest."
+      "meaning": "Co-author approval for the release of this exact artifact is on record."
     },
     "governance_clearance": {
-      "state": "PENDING",
+      "state": "PASS",
       "meaning": "All programme prerequisites for release are closed and no hold is active."
     },
     "founder_release_authorization": {
-      "state": "PENDING",
-      "meaning": "Release of this exact artifact is explicitly authorized."
+      "state": "PASS",
+      "meaning": "Release of this exact artifact was authorized."
     }
   },
+
   "policy": {
-    "allowed_states": [
-      "PASS",
-      "PENDING",
-      "BLOCKED"
-    ],
+    "allowed_states": ["PASS", "PENDING", "BLOCKED"],
     "default": "PENDING",
     "fail_closed": true,
-    "rule": "A state may be PASS only when every private prerequisite mapped to it is itself satisfied. The weakest prerequisite determines the public state: no averaging, no partial credit.",
-    "release_requires": "all four states PASS",
-    "evidence_location": "Detailed prerequisites, their evidence and their mapping to these four states are held privately and are not part of the public interface."
+    "rule": "A state may be PASS only when every prerequisite mapped to it is satisfied. The weakest prerequisite determines the public state: no averaging, no partial credit.",
+    "evidence_location": "Detailed prerequisites, their evidence and their mapping to these four states are held outside this repository and are not part of the public interface."
   },
-  "release_authorized": false
+
+  "open_items": {
+    "repository_license": "UNDECLARED — the released paper is CC BY 4.0 per its Zenodo deposit, but this repository declares no licence for its source, tooling and documentation. See LICENSES/NOTICE.md."
+  },
+
+  "release_authorized": true
 }
