@@ -1,0 +1,16 @@
+# Build output is never source and is never committed.
+/build/
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.out
+*.toc
+*.synctex.gz
+*.xdv
+
+# Local scratch
+.DS_Store
+__pycache__/
+*.py[cod]

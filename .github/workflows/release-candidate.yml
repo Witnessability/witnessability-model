@@ -1,0 +1,126 @@
+name: Release candidate
+
+# Produces a complete review package for humans. It does NOT tag, release, deposit, or submit
+# anything anywhere. Its only output is a downloadable artifact bundle.
+#
+# Manual trigger only — a release candidate is a deliberate act, never a side effect of a push.
+
+on:
+  workflow_dispatch:
+    inputs:
+      candidate_label:
+        description: "Label for this candidate, e.g. rc-001"
+        required: true
+        default: "rc-001"
+
+permissions:
+  contents: read
+
+jobs:
+  candidate:
+    name: build release candidate (no release)
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Needed both for SOURCE_DATE_EPOCH (see ci.yml) and for `git archive` of an exact SHA.
+          fetch-depth: 0
+
+      - name: Resolve jobname from the toolchain lock
+        run: |
+          echo "JOBNAME=$(python3 -c "import json;print(json.load(open('tooling/toolchain.lock.json'))['jobname'])")" >> "$GITHUB_ENV"
+
+      - name: Refuse to run on a dirty or ambiguous state
+        run: |
+          echo "commit: ${{ github.sha }}"
+          echo "ref   : ${{ github.ref }}"
+          ./scripts/scan-secrets.sh
+          ./scripts/verify-baselines.sh
+          python3 scripts/make-baselines.py --check
+
+      - name: Build pinned toolchain image
+        run: docker build --platform linux/amd64 -t wm-tex:local-amd64 -f tooling/Dockerfile tooling/
+
+      - name: Build paper
+        env:
+          BUILD_PLATFORM: linux/amd64
+        run: ./scripts/build-paper.sh
+
+      - name: QA gates
+        env:
+          BUILD_PLATFORM: linux/amd64
+        run: |
+          python3 scripts/qa-references.py --json-out build/REFS-REPORT.json
+          ./scripts/qa-run.sh --pdf build/${JOBNAME}.pdf --log build/${JOBNAME}.latex.log \
+                              --json-out build/QA-REPORT.json
+
+      - name: Page thumbnails for visual review
+        run: |
+          mkdir -p build/preview
+          docker run --rm -v "$PWD/build:/b" -w /b wm-tex:local-amd64 \
+            pdftoppm -png -r 72 ${JOBNAME}.pdf preview/page
+          ls -1 build/preview | wc -l
+
+      - name: Changed pages vs previous released version
+        run: |
+          # WM 1.0 is the previous released version. A page-level visual diff is only meaningful
+          # once a released 1.1 exists; until then, record the comparison basis explicitly.
+          {
+            echo "previous released artifact: model/1.0/WM-1.0.pdf"
+            echo "sha256: $(sha256sum model/1.0/WM-1.0.pdf | cut -d' ' -f1)"
+            echo "pages : $(docker run --rm -v "$PWD:/r" -w /r wm-tex:local-amd64 pdfinfo model/1.0/WM-1.0.pdf | awk '/^Pages/{print $2}')"
+            echo "candidate pages: $(docker run --rm -v "$PWD/build:/b" -w /b wm-tex:local-amd64 pdfinfo ${JOBNAME}.pdf | awk '/^Pages/{print $2}')"
+            echo
+            echo "NOTE: WM 1.0 and WM 1.1 are different revisions; a page-by-page image diff between"
+            echo "them is not meaningful. Image diffing applies from the first released 1.1 onward."
+          } > build/CHANGED-PAGES.txt
+
+      - name: Source bundle
+        run: |
+          git archive --format=tar.gz --prefix=witnessability-model-${{ github.sha }}/ \
+            -o build/source-bundle.tar.gz ${{ github.sha }}
+
+      - name: SHA256SUMS
+        run: |
+          cd build
+          sha256sum ${JOBNAME}.pdf BUILD-MANIFEST.json QA-REPORT.json REFS-REPORT.json \
+                    source-bundle.tar.gz > SHA256SUMS
+          cat SHA256SUMS
+
+      - name: Candidate notice
+        run: |
+          cat > build/CANDIDATE-NOTICE.md <<'EOF'
+          # Release candidate — NOT A RELEASE
+
+          This bundle is for human review only.
+
+          - no git tag was created
+          - no GitHub release was created
+          - no SSRN submission was performed
+          - no Zenodo deposit was performed
+          - WM 1.1 release is NOT authorized
+
+          Release requires every state in publication/RELEASE-STATE-PUBLIC.json to be PASS and
+          release_authorized set for this artifact's SHA-256.
+          EOF
+          cat build/CANDIDATE-NOTICE.md
+
+      - name: Upload candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-candidate-${{ inputs.candidate_label }}-${{ github.sha }}
+          path: |
+            build/${{ env.JOBNAME }}.pdf
+            build/BUILD-MANIFEST.json
+            build/QA-REPORT.json
+            build/REFS-REPORT.json
+            build/SHA256SUMS
+            build/CANDIDATE-NOTICE.md
+            build/CHANGED-PAGES.txt
+            build/source-bundle.tar.gz
+            build/preview/
+            build/build.log
+            build/${{ env.JOBNAME }}.latex.log
+          retention-days: 90

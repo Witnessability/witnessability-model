@@ -1,0 +1,105 @@
+name: Publication verification (read-only)
+
+# Verifies what an external venue actually published, against what this repository released.
+# It reads. It never submits, deposits, mints, or edits anything, and it holds no credential:
+# both Zenodo record retrieval and SSRN page retrieval are public, unauthenticated operations.
+#
+# Run it after a human has completed a publication step.
+
+on:
+  workflow_dispatch:
+    inputs:
+      zenodo_record_id:
+        description: "Zenodo record id to verify, e.g. 21824436 (blank to skip)"
+        required: false
+        default: ""
+      expected_sha256:
+        description: "SHA-256 of the released artifact this publication should carry"
+        required: true
+      expected_md5:
+        description: "MD5 of the same artifact (Zenodo reports MD5)"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: verify external publication records
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify Zenodo record
+        if: inputs.zenodo_record_id != ''
+        run: |
+          python3 - <<'PY'
+          import json, os, sys, urllib.request
+
+          rid = os.environ["RID"]
+          want_md5 = os.environ.get("WANT_MD5", "").strip()
+
+          url = f"https://zenodo.org/api/records/{rid}"
+          with urllib.request.urlopen(url, timeout=30) as r:
+              rec = json.load(r)
+
+          md = rec.get("metadata", {})
+          print(f"record        : {rid}")
+          print(f"doi           : {rec.get('doi')}")
+          print(f"concept doi   : {rec.get('conceptdoi')}")
+          print(f"title         : {md.get('title')}")
+          print(f"version       : {md.get('version')}")
+          print(f"published     : {md.get('publication_date')}")
+          print(f"creators      : {[c.get('name') for c in md.get('creators', [])]}")
+          print(f"license       : {md.get('license')}")
+
+          problems = []
+
+          # Concept-DOI continuity is the property that a new version must preserve.
+          if rec.get("conceptdoi") != "10.5281/zenodo.21824435":
+              problems.append(
+                  f"concept DOI is {rec.get('conceptdoi')}, expected 10.5281/zenodo.21824435 — "
+                  "this record is NOT part of the established Witnessability Model line"
+              )
+
+          files = rec.get("files", [])
+          if len(files) != 1:
+              problems.append(f"expected exactly one deposited file, found {len(files)}")
+          for f in files:
+              print(f"file          : {f.get('key')} {f.get('size')} {f.get('checksum')}")
+              if want_md5 and f.get("checksum") != f"md5:{want_md5}":
+                  problems.append(
+                      f"deposited file checksum {f.get('checksum')} != expected md5:{want_md5}"
+                  )
+
+          if problems:
+              for p in problems:
+                  print(f"::error::{p}")
+              sys.exit(1)
+          print("zenodo verification: PASS")
+          PY
+        env:
+          RID: ${{ inputs.zenodo_record_id }}
+          WANT_MD5: ${{ inputs.expected_md5 }}
+
+      - name: SSRN verification is manual
+        run: |
+          cat <<'EOF'
+          SSRN exposes no public API suitable for automated verification, and scripted retrieval of
+          its pages is not a supported operation. SSRN verification is therefore performed by a
+          human following publication/SSRN-WORKFLOW.md §6:
+
+            1. download the published PDF from abstract 6994720
+            2. shasum -a 256 the downloaded file
+            3. compare with the release digest
+            4. record the result in publication/receipts/
+
+          This step is a reminder, not a check. It does not assert an SSRN state.
+          EOF
+
+      - name: Record expectation
+        run: |
+          echo "expected artifact sha256: ${{ inputs.expected_sha256 }}"
+          echo "A receipt must be committed to publication/receipts/ for this verification to count."

@@ -1,0 +1,88 @@
+name: Release (INERT — DO NOT ENABLE)
+
+# ============================================================================================
+# THIS WORKFLOW IS DELIBERATELY INERT.
+#
+# It exists so that the gates a release must pass can be reviewed BEFORE any release is possible,
+# rather than being written in a hurry on the day of a release. It cannot create a tag, cannot
+# create a GitHub release, and holds no credential.
+#
+# The preflight job below runs the real gate logic and then FAILS ON PURPOSE. Enabling this
+# workflow means deleting the `Refuse` step — a visible, reviewable, single-line change that
+# requires governance approval per publication/RELEASE-POLICY.md §3 and §5.
+# ============================================================================================
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "Proposed tag, e.g. wm-v1.1.0 (validated, never created)"
+        required: true
+      artifact_sha256:
+        description: "SHA-256 the release is authorized for"
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    name: release preflight (always refuses)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate proposed tag against the naming convention
+        run: |
+          tag="${{ inputs.release_tag }}"
+          if [[ ! "$tag" =~ ^wm-v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::tag '$tag' does not match wm-vMAJOR.MINOR.PATCH (publication/VERSIONING.md §4)"
+            exit 1
+          fi
+          if git rev-parse "$tag" >/dev/null 2>&1; then
+            echo "::error::tag '$tag' already exists; a release artifact is never re-tagged"
+            exit 1
+          fi
+          echo "tag shape OK: $tag"
+
+      - name: Public release state must be all PASS
+        run: |
+          python3 - <<'PY'
+          import json, sys
+          s = json.load(open("publication/RELEASE-STATE-PUBLIC.json"))
+          states = s["states"]
+          bad = {k: v["state"] for k, v in states.items() if v["state"] != "PASS"}
+          for k, v in states.items():
+              print(f"{k}: {v['state']}")
+          if bad:
+              print(f"::error::public release state is not all PASS: {bad}")
+              sys.exit(1)
+          if not s.get("release_authorized"):
+              print("::error::release_authorized is false")
+              sys.exit(1)
+          PY
+
+      - name: Authorization must name this digest
+        run: |
+          echo "authorized digest: ${{ inputs.artifact_sha256 }}"
+          echo "::error::no recorded authorization exists for any digest"
+          exit 1
+
+      - name: Refuse
+        if: always()
+        run: |
+          cat <<'EOF'
+          ============================================================
+          RELEASE REFUSED — this workflow is inert by design.
+
+          It creates no tag, no release, no deposit, no submission.
+
+          To enable releases, governance must:
+            1. bring every state in publication/RELEASE-STATE-PUBLIC.json to PASS,
+               which requires the corresponding prerequisites to be satisfied;
+            2. set release_authorized to true for the exact artifact digest;
+            3. approve the removal of this Refuse step in a reviewed pull request.
+          ============================================================
+          EOF
+          exit 1

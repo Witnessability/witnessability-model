@@ -1,0 +1,40 @@
+{
+  "_comment": "Public release-state interface. This file is the ONLY release-gating input the public repository consumes. It carries four generic states and no case history: which reviews were run, by whom, under which internal identifiers, and against which evidence is deliberately not represented here. A state is PASS only when the corresponding private evidence legitimately supports it; the default is PENDING and the interface is fail-closed.",
+
+  "schema_version": "1",
+  "subject": {
+    "model_version": "1.1",
+    "paper_revision": "1.1",
+    "candidate": "WM 1.1 RC002"
+  },
+
+  "states": {
+    "semantic_review": {
+      "state": "PENDING",
+      "meaning": "Independent review of the model's structure and claims is complete and its findings are resolved or explicitly accepted."
+    },
+    "coauthor_approval": {
+      "state": "PENDING",
+      "meaning": "Every co-author has consented to the release of this exact artifact, identified by digest."
+    },
+    "governance_clearance": {
+      "state": "PENDING",
+      "meaning": "All programme prerequisites for release are closed and no hold is active."
+    },
+    "founder_release_authorization": {
+      "state": "PENDING",
+      "meaning": "Release of this exact artifact is explicitly authorized."
+    }
+  },
+
+  "policy": {
+    "allowed_states": ["PASS", "PENDING", "BLOCKED"],
+    "default": "PENDING",
+    "fail_closed": true,
+    "rule": "A state may be PASS only when every private prerequisite mapped to it is itself satisfied. The weakest prerequisite determines the public state: no averaging, no partial credit.",
+    "release_requires": "all four states PASS",
+    "evidence_location": "Detailed prerequisites, their evidence and their mapping to these four states are held privately and are not part of the public interface."
+  },
+
+  "release_authorized": false
+}

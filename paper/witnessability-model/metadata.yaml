@@ -1,0 +1,103 @@
+# Paper metadata — single source of truth for identity fields.
+# Consumed by build and QA gates. Any mismatch between this file and the built PDF is a QA failure.
+
+paper:
+  title: "Toward a Witnessability Model for AI and Software Execution Systems"
+  subtitle: "A Boundary-Based Framework for Classifying Execution Evidence"
+  short_title: "Witnessability Model"
+
+model:
+  name: "Witnessability Model"
+  version: "1.1"
+  line: "1.0"
+  scope_note: >-
+    Version 1.1 is a bridge revision inside the 1.0 line. The WL vocabulary and the Boundary
+    Ceiling are retained. A typed reformulation replacing the scalar vocabulary is reserved for
+    version 2.0.
+
+paper_revision:
+  id: "1.1"
+  date_statement: "Version 1.1 (bridge revision of the 1.0 line) --- Draft, July 2026"
+  status: "DRAFT"
+  released: false
+
+# Canonical publication display form for WM 1.1. Applied to PDF metadata, release metadata, and
+# SSRN/Zenodo preparation. Identity continuity with earlier artifacts is established by ORCID,
+# never by string equality of display names.
+authors:
+  - name: "Mikhail A. Sergeev"
+    affiliation: "Independent Researcher"
+    orcid: "0009-0001-6443-855X"
+    order: 1
+    historical_name_variation: "Mikhail Anatolievich Sergeev"
+  - name: "Vladimir Ikher"
+    affiliation: "Independent Researcher"
+    orcid: "0009-0000-0084-704X"
+    order: 2
+
+# Display-name variation across published artifacts. Recorded, not normalized: WM 1.0 is published
+# and its metadata is not rewritten to match a later decision.
+name_variation_record:
+  - artifact: "WM 1.0 (SSRN abstract 6994720 / Zenodo 21824436)"
+    pdf_metadata_author: "Mikhail Anatolievich Sergeev and Vladimir Ikher"
+    zenodo_creator: "Sergeev, Mikhail A."
+    action: "NOT MODIFIED — historical publication-name variation"
+  - artifact: "WM 1.1 (RC001 onward)"
+    pdf_metadata_author: "Mikhail A. Sergeev and Vladimir Ikher"
+    action: "canonical form applied"
+  - note: >-
+      The two forms denote the same person. Continuity is established by ORCID
+      0009-0001-6443-855X, which is identical across both artifacts and both venues. No consumer
+      should infer distinct authorship from the differing display strings.
+
+keywords:
+  - witnessability
+  - AI agents
+  - execution evidence
+  - provenance
+  - attestations
+  - observability
+  - software supply chain
+  - runtime verification
+  - execution ownership
+  - agent runtimes
+  - AI governance
+  - auditability
+  - operational risk
+  - independent verification
+  - software execution
+
+# Expected properties of a correct build. QA gates assert these against the produced PDF.
+expected_build:
+  page_size: "A4"
+  pages_min: 20
+  pages_max: 40
+  fonts_all_embedded: true
+  # The imported baseline was produced by xelatex/xdvipdfmx. Recorded as observed fact, not as a
+  # target: the pinned toolchain declares its own engine in tooling/toolchain.lock.json.
+  baseline_producer: "xdvipdfmx (0.1)"
+  baseline_creator: "LaTeX with hyperref"
+
+# Document-level PDF metadata the build is expected to set. The imported WM 1.1 baseline sets NONE
+# of these; WM 1.0 did set them. The regression is fixed in the current publication candidate.
+expected_pdf_metadata:
+  title: "Toward a Witnessability Model for AI and Software Execution Systems"
+  author: "Mikhail A. Sergeev and Vladimir Ikher"
+  subject: "AI agents; execution evidence; runtime assurance; AI governance; witnessability; software assurance"
+  keywords: "witnessability, AI agents, execution evidence, provenance, attestations, runtime verification"
+
+version_identity:
+  wm_1_0_canonical:
+    sha256: "295eb6cbe3c9f65f3678253dd803b200b3d36632470fdb592f83279b9379389d"
+    bytes: 213922
+    status: "canonical 1.0"
+  wm_1_0_secondary:
+    sha256_prefix: "f3339324"
+    sha256_suffix: "1255e"
+    sha256: UNAVAILABLE
+    status: "secondary 1.0 line (arXiv-line PDF, v0.5.1 file lineage)"
+    note: "Full digest not recovered from raw bytes under this task; recorded as stated in the WM 1.1 source."
+  wm_1_1_review_baseline:
+    tex_sha256: "bc0190779f13e525c10ab2f8abc9727f8123c65c39c2773c93aad16e099e95cc"
+    pdf_sha256: "69a51fb1ce70e67ec4f73d8fad74a2b0dfbefe003bcda30c2eea619209190615"
+    status: "UNRELEASED REVIEW BASELINE — RELEASE HOLD ACTIVE"

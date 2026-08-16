@@ -1,0 +1,236 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Witnessability/witnessability-model/publication/release-manifest.schema.json",
+  "title": "Witnessability Model release manifest",
+  "description": "Binds a model version and paper revision to exact bytes, the toolchain that produced them, the authorizations that permitted their release, and the external records that resulted. A field whose value is not yet known carries an explicit state, never a plausible-looking value.",
+  "type": "object",
+  "required": [
+    "schema_version", "model_version", "paper_revision", "git_commit", "git_tree",
+    "source_sha256", "pdf_sha256", "toolchain_digest", "authors", "coauthor_approval",
+    "founder_release_authorization", "release_tag", "release_timestamp", "supersedes",
+    "ssrn_target", "zenodo_target", "version_doi", "concept_doi", "external_verification_status"
+  ],
+  "additionalProperties": false,
+
+  "$defs": {
+    "state": {
+      "enum": ["PENDING", "NOT_APPLICABLE", "UNAVAILABLE", "BLOCKED"],
+      "description": "Explicit non-value. Never substitute a guess for one of these."
+    },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "sha256_or_state": {
+      "oneOf": [
+        { "$ref": "#/$defs/sha256" },
+        { "$ref": "#/$defs/state" }
+      ]
+    },
+    "iso_or_state": {
+      "oneOf": [
+        { "type": "string", "format": "date-time" },
+        { "$ref": "#/$defs/state" }
+      ]
+    },
+    "doi_or_state": {
+      "oneOf": [
+        { "type": "string", "pattern": "^10\\.\\d{4,9}/\\S+$" },
+        { "$ref": "#/$defs/state" }
+      ]
+    },
+    "approval": {
+      "type": "object",
+      "required": ["state"],
+      "additionalProperties": false,
+      "properties": {
+        "state": { "enum": ["GRANTED", "PENDING", "REFUSED", "NOT_APPLICABLE"] },
+        "by": { "type": "string" },
+        "recorded_at": { "type": "string", "format": "date-time" },
+        "evidence": {
+          "type": "string",
+          "description": "Repository path or external URL of the artifact proving this approval. Required whenever state is GRANTED."
+        },
+        "artifact_sha256": {
+          "$ref": "#/$defs/sha256",
+          "description": "The exact artifact digest this approval was granted for. An approval that does not name a digest does not authorize any specific bytes."
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "state": { "const": "GRANTED" } } },
+          "then": { "required": ["state", "by", "recorded_at", "evidence", "artifact_sha256"] }
+        }
+      ]
+    },
+    "import_baseline": {
+      "type": "object",
+      "description": "Shape of an import-baseline record: bytes received from an upstream process, recorded on arrival and never edited in place.",
+      "required": ["record_id", "record_type", "status", "artifacts", "assertions"],
+      "properties": {
+        "record_id": { "type": "string" },
+        "record_type": { "const": "IMPORT_BASELINE" },
+        "status": { "enum": ["UNRELEASED_REVIEW_BASELINE", "SUPERSEDED", "RELEASED"] },
+        "release_hold": { "enum": ["ACTIVE", "CLEARED", "NOT_APPLICABLE"] }
+      }
+    }
+  },
+
+  "properties": {
+    "schema_version": { "const": "1" },
+
+    "model_version": { "type": "string", "pattern": "^\\d+\\.\\d+$" },
+    "paper_revision": { "type": "string" },
+
+    "git_commit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "git_tree": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+
+    "source_sha256": {
+      "type": "object",
+      "description": "Digest of every source file that entered the build, keyed by repository path.",
+      "additionalProperties": { "$ref": "#/$defs/sha256" },
+      "minProperties": 1
+    },
+    "pdf_sha256": { "$ref": "#/$defs/sha256" },
+    "pdf_bytes": { "type": "integer", "minimum": 1 },
+    "pdf_md5": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$",
+      "description": "Recorded because Zenodo reports MD5 and post-deposit verification compares that field."
+    },
+
+    "toolchain_digest": {
+      "type": "object",
+      "required": ["image_ref", "base_image_digest", "engine"],
+      "properties": {
+        "image_ref": { "type": "string" },
+        "base_image_digest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+        "built_image_digest": { "type": "string" },
+        "engine": { "enum": ["xelatex", "pdflatex", "lualatex"] },
+        "tex_live_version": { "type": "string" },
+        "reproducibility": {
+          "type": "object",
+          "properties": {
+            "byte_identical_across_platforms": {
+              "oneOf": [{ "type": "boolean" }, { "const": "NOT_YET_PROVEN" }]
+            },
+            "platforms_compared": { "type": "array", "items": { "type": "string" } },
+            "known_nondeterminism": { "type": "array", "items": { "type": "string" } }
+          }
+        }
+      }
+    },
+
+    "authors": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["name", "order"],
+        "properties": {
+          "name": { "type": "string" },
+          "orcid": { "type": "string", "pattern": "^\\d{4}-\\d{4}-\\d{4}-\\d{3}[\\dX]$" },
+          "order": { "type": "integer", "minimum": 1 }
+        }
+      }
+    },
+
+    "coauthor_approval": {
+      "type": "object",
+      "description": "One entry per co-author. Release requires GRANTED from every one of them, each naming the exact artifact digest.",
+      "additionalProperties": { "$ref": "#/$defs/approval" },
+      "minProperties": 1
+    },
+    "founder_release_authorization": { "$ref": "#/$defs/approval" },
+
+    "governance_gates": {
+      "type": "object",
+      "description": "Gate register snapshot at release time. Every gate must be PASS with evidence.",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["state"],
+        "properties": {
+          "state": { "enum": ["PASS", "PENDING", "BLOCKED", "NOT_APPLICABLE", "UNAVAILABLE"] },
+          "evidence": { "type": "string" }
+        },
+        "allOf": [
+          {
+            "if": { "properties": { "state": { "const": "PASS" } } },
+            "then": { "required": ["state", "evidence"] }
+          }
+        ]
+      }
+    },
+
+    "release_tag": {
+      "oneOf": [
+        { "type": "string", "pattern": "^wm-v\\d+\\.\\d+\\.\\d+$" },
+        { "$ref": "#/$defs/state" }
+      ]
+    },
+    "release_timestamp": { "$ref": "#/$defs/iso_or_state" },
+
+    "supersedes": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["model_version", "pdf_sha256"],
+          "properties": {
+            "model_version": { "type": "string" },
+            "pdf_sha256": { "$ref": "#/$defs/sha256" },
+            "version_doi": { "$ref": "#/$defs/doi_or_state" }
+          }
+        },
+        { "$ref": "#/$defs/state" }
+      ]
+    },
+
+    "ssrn_target": {
+      "type": "object",
+      "required": ["abstract_id", "action", "state"],
+      "properties": {
+        "abstract_id": { "type": "string" },
+        "action": { "enum": ["REVISION", "NEW_SUBMISSION", "NONE"] },
+        "state": { "enum": ["PUBLISHED", "SUBMITTED", "PENDING", "NOT_APPLICABLE"] },
+        "published_url": { "type": "string" },
+        "retrieved_sha256": { "$ref": "#/$defs/sha256_or_state" },
+        "artifact_identical_to_release": {
+          "oneOf": [{ "type": "boolean" }, { "$ref": "#/$defs/state" }]
+        }
+      }
+    },
+
+    "zenodo_target": {
+      "type": "object",
+      "required": ["action", "state"],
+      "properties": {
+        "action": { "enum": ["NEW_VERSION", "NEW_RECORD", "NONE"] },
+        "concept_record_id": { "type": "string" },
+        "state": { "enum": ["PUBLISHED", "DRAFT", "PENDING", "NOT_APPLICABLE"] },
+        "record_id": { "type": "string" },
+        "retrieved_md5": { "type": "string" }
+      }
+    },
+
+    "version_doi": { "$ref": "#/$defs/doi_or_state" },
+    "concept_doi": { "$ref": "#/$defs/doi_or_state" },
+
+    "external_verification_status": {
+      "type": "object",
+      "required": ["state"],
+      "properties": {
+        "state": { "enum": ["VERIFIED", "PENDING", "FAILED", "NOT_APPLICABLE"] },
+        "verified_at": { "$ref": "#/$defs/iso_or_state" },
+        "method": { "type": "string" },
+        "findings": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+
+    "qa": {
+      "type": "object",
+      "properties": {
+        "report": { "type": "string" },
+        "errors": { "type": "integer", "minimum": 0 },
+        "warnings": { "type": "integer", "minimum": 0 },
+        "known_findings_downgraded": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}
