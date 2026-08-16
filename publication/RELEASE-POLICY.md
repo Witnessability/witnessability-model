@@ -91,8 +91,8 @@ evidence:
    `publication/RELEASE-STATE-PUBLIC.json`.
 3. Every co-author has recorded explicit consent to release, referencing the exact artifact digest.
 4. Founder release authorization is explicit, recorded, and references the same digest.
-5. The release manifest validates against `publication/release-manifest.schema.json` with no
-   `PENDING` field in the required set.
+5. The release identities — artifact digest, tag, commit and external identifiers — are recorded in
+   `publication/RELEASE-STATE-PUBLIC.json`, with no state left `PENDING`.
 
 Absent any one of these, the correct terminal state is **NOT READY**, and the reason is named.
 

@@ -41,6 +41,20 @@ pipeline exists: from the first build produced here onward, the environment **is
 The imported baseline therefore keeps its own identity in `model/1.1/` and is never claimed to be a
 pipeline output.
 
+## A constraint that must not be tidied away
+
+**The build jobname is load-bearing for the released artifact.** `tooling/toolchain.lock.json` sets
+`jobname` to `WM-1.1-RC002`, and that string reaches the PDF: rebuilding the release commit with
+`jobname` changed to `WM-1.1` produces `a6663a56…d52060` instead of the published
+`7d62e326…167fb902`. Same source, same toolchain, same timestamp — different bytes.
+
+The name therefore looks like a leftover from the candidate stage and is not one. Renaming it for
+tidiness would silently end the repository's ability to reproduce the artifact it published, which
+is the one property the release record depends on. Measured, not assumed: the substitution was tried
+and reverted.
+
+If the name is ever to change, it changes for the *next* release, together with a new artifact.
+
 ## Determinism measures in place
 
 - **Timestamps.** `SOURCE_DATE_EPOCH` is the commit time of the last commit touching `paper/`,
