@@ -1,4 +1,4 @@
-# witnessability-model
+# Witnessability Model
 
 Canonical, reproducible publication repository for the **Witnessability Model (WM)** and its
 accompanying paper.
