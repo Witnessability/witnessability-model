@@ -141,7 +141,9 @@ if __name__ == "__main__":
     # shape is right, so failing loudly here is the point.
     assert isinstance(data["authors"], list), "authors must parse to a list"
     assert data["authors"][0]["orcid"] == "0009-0001-6443-855X"
-    assert data["authors"][1]["release_consent"] == "PENDING"
+    assert data["authors"][1]["name"] == "Vladimir Ikher"
+    assert isinstance(data["name_variation_record"], list) and len(data["name_variation_record"]) == 3
+    assert isinstance(data["name_variation_record"][2]["note"], str)
     assert data["model"]["version"] == "1.1"
     assert data["expected_build"]["pages_min"] == 20
     assert data["expected_build"]["fonts_all_embedded"] is True
