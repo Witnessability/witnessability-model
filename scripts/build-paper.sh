@@ -18,7 +18,17 @@ jqget() { python3 -c "import json,sys;print(json.load(open('$LOCK'))$1)"; }
 
 IMAGE_NAME="$(jqget "['image']['name']")"
 ENGINE="$(jqget "['engine']")"
-PLATFORM="${BUILD_PLATFORM:-$(jqget "['default_platform']")}"
+# Default to the architecture we are actually running on. A fixed default in the lock file is a
+# trap: on the other architecture it builds an image the host cannot execute, and the failure
+# surfaces as "exec /bin/sh: exec format error" from inside apt, which names nothing useful. The
+# lock value remains the fallback for hosts we do not recognise, and BUILD_PLATFORM still overrides
+# both — cross-building is a deliberate act, not something to fall into by default.
+case "$(uname -m)" in
+  arm64 | aarch64) HOST_PLATFORM="linux/arm64" ;;
+  x86_64 | amd64)  HOST_PLATFORM="linux/amd64" ;;
+  *)               HOST_PLATFORM="$(jqget "['default_platform']")" ;;
+esac
+PLATFORM="${BUILD_PLATFORM:-$HOST_PLATFORM}"
 JOBNAME="$(jqget "['jobname']")"
 
 # One image per platform, built from this repository's Dockerfile. The tag encodes the
