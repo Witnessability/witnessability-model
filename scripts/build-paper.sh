@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# SPDX-License-Identifier: Apache-2.0
 # Build the paper from a clean checkout using the repository-owned, digest-pinned toolchain.
 #
 # The ambient TeX installation is never used. If Docker is unavailable, this script fails; it does

@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 name: CI
 
 # Build and gate every change. This workflow publishes nothing, tags nothing, and holds no
@@ -90,6 +91,9 @@ jobs:
             echo "second: $(sha256sum build/${JOBNAME}.pdf)"
             exit 1
           fi
+
+      - name: The published artifact is still reproducible from source
+        run: ./scripts/reproduce-release.sh
 
       - name: Upload build outputs
         if: always()

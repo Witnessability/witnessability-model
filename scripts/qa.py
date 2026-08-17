@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: Apache-2.0
 """PDF and build quality gates for the Witnessability Model paper.
 
 Run against a built PDF plus the LaTeX log it came from:

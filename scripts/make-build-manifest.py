@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: Apache-2.0
 """Emit build/BUILD-MANIFEST.json binding source, toolchain, environment and output.
 
 The manifest answers one question: *given these exact inputs, this exact toolchain and this exact

@@ -1,13 +1,11 @@
 {
   "_comment": "Public release-state interface. It carries generic states and no case history: which reviews ran, by whom, and against which internal evidence is deliberately not represented here. A state is PASS only when the corresponding prerequisite is satisfied; the default is PENDING and the interface is fail-closed.",
-
   "schema_version": "1",
   "subject": {
     "model_version": "1.1",
     "paper_revision": "1.1",
     "status": "RELEASED"
   },
-
   "release": {
     "released": true,
     "release_date": "2026-08-16",
@@ -30,9 +28,19 @@
       "Zenodo — archival copy of record and citable identifier",
       "GitHub release wm-v1.1.0 — distribution copy",
       "releases/1.1/ in this repository — discoverable copy, digest-checked in CI"
-    ]
+    ],
+    "reproduction": {
+      "source_date_epoch": 1786879871,
+      "why_pinned": "SOURCE_DATE_EPOCH is otherwise derived from the last commit touching paper/, so any later commit there moves it and the output bytes with it. The released artifact was built at this timestamp; reproducing it requires this value, not the tree's current one.",
+      "jobname": "WM-1.1-RC002",
+      "jobname_note": "The jobname reaches the PDF bytes. It looks like a leftover from the candidate stage and is load-bearing: building as WM-1.1 yields a different PDF.",
+      "command": "make reproduce-release",
+      "verified_platforms": [
+        "linux/amd64",
+        "linux/arm64"
+      ]
+    }
   },
-
   "states": {
     "semantic_review": {
       "state": "PASS",
@@ -51,18 +59,46 @@
       "meaning": "Release of this exact artifact was authorized."
     }
   },
-
   "policy": {
-    "allowed_states": ["PASS", "PENDING", "BLOCKED"],
+    "allowed_states": [
+      "PASS",
+      "PENDING",
+      "BLOCKED"
+    ],
     "default": "PENDING",
     "fail_closed": true,
     "rule": "A state may be PASS only when every prerequisite mapped to it is satisfied. The weakest prerequisite determines the public state: no averaging, no partial credit.",
     "evidence_location": "Detailed prerequisites, their evidence and their mapping to these four states are held outside this repository and are not part of the public interface."
   },
-
-  "open_items": {
-    "repository_license": "UNDECLARED — the released paper is CC BY 4.0 per its Zenodo deposit, but this repository declares no licence for its source, tooling and documentation. See LICENSES/NOTICE.md."
-  },
-
-  "release_authorized": true
+  "release_authorized": true,
+  "licensing": {
+    "model": "path-scoped",
+    "publication_material": {
+      "license": "CC BY 4.0",
+      "spdx": "CC-BY-4.0",
+      "paths": [
+        "paper/",
+        "model/",
+        "releases/",
+        "publication/",
+        "README.md",
+        "LICENSES/NOTICE.md"
+      ],
+      "agrees_with_deposit": true
+    },
+    "software": {
+      "license": "Apache License 2.0",
+      "spdx": "Apache-2.0",
+      "paths": [
+        "scripts/",
+        "tooling/",
+        ".github/workflows/",
+        "Makefile",
+        ".gitignore"
+      ]
+    },
+    "third_party": "none in tracked source; the two licence texts in LICENSES/ are verbatim reproductions and are not repository-licensed",
+    "map": "LICENSES/NOTICE.md",
+    "note": "No single licence covers the repository and no top-level LICENSE file is present; automatic licence detection cannot express this and is not accommodated."
+  }
 }

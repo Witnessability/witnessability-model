@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: Apache-2.0
 """Loader for this repository's metadata.yaml.
 
 Uses PyYAML when it is available. When it is not — the pinned toolchain image and a bare macOS

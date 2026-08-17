@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# SPDX-License-Identifier: Apache-2.0
 # Build the repository-owned TeX image and write tooling/toolchain.lock.json from what the built
 # image actually reports — never from what the Dockerfile intended.
 #

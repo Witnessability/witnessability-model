@@ -1,15 +1,17 @@
+# SPDX-License-Identifier: Apache-2.0
 # Canonical entry points. Everything CI runs, a human can run identically with one word.
 
 SHELL := /bin/bash
 JOBNAME := $(shell python3 -c "import json;print(json.load(open('tooling/toolchain.lock.json'))['jobname'])" 2>/dev/null || echo WM-1.1)
 
-.PHONY: all paper qa qa-baseline refs verify secrets clean toolchain help
+.PHONY: all paper qa qa-baseline refs verify secrets clean toolchain help reproduce-release
 
 help:
 	@echo "make paper        build the paper into build/ using the pinned toolchain"
 	@echo "make qa           run PDF + text-extraction gates against the built PDF"
 	@echo "make qa-baseline  run the same gates against the imported WM 1.1 baseline"
 	@echo "make refs         run bibliography gates (no build required)"
+	@echo "make reproduce-release  rebuild the released artifact and prove it is the published bytes"
 	@echo "make verify       verify published baselines still match their recorded digests"
 	@echo "make secrets      scan the working tree for credentials"
 	@echo "make toolchain    build the pinned image and regenerate tooling/toolchain.lock.json"
@@ -53,3 +55,6 @@ review-package:
 
 clean:
 	rm -rf build
+
+reproduce-release:
+	./scripts/reproduce-release.sh

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: Apache-2.0
 """Semantic invariant gates for the Witnessability Model paper.
 
 These gates protect one commitment, stated by Axiom BC and by the paper's own erratum:

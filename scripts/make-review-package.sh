@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# SPDX-License-Identifier: Apache-2.0
 # Assemble the stable human / co-author review package for a release candidate.
 #
 # It packages what a reviewer needs to judge the candidate and nothing that would imply it is

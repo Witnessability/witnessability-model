@@ -93,6 +93,9 @@ evidence:
 4. Founder release authorization is explicit, recorded, and references the same digest.
 5. The release identities — artifact digest, tag, commit and external identifiers — are recorded in
    `publication/RELEASE-STATE-PUBLIC.json`, with no state left `PENDING`.
+6. The licence the artifact will carry at the external venue is the licence this repository declares
+   for it in `LICENSES/NOTICE.md`. A deposit made under a different licence than the source it came
+   from leaves the same bytes governed by two answers, and the deposit is the one readers rely on.
 
 Absent any one of these, the correct terminal state is **NOT READY**, and the reason is named.
 

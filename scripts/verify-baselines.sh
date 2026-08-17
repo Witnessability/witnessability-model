@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# SPDX-License-Identifier: Apache-2.0
 # Verify that every published artifact still has the bytes its record claims.
 #
 # This is the anti-drift gate. It covers two things:
