@@ -73,7 +73,7 @@ paper/                          the paper's working source
 releases/                       published artifacts and their records, by version
   1.0/                          the published 1.0 PDF and its retrospective record
   1.1/                          the released PDF, its errata and their digests
-publication/                    release policy, versioning, deposit procedure, public release state
+publication/                    release policy, versioning, Zenodo and SSRN procedures, public release state
 tooling/                        the build system: pinned toolchain, build and QA scripts
 LICENSES/                       licence texts and the path-to-licence map
 .github/workflows/              CI and read-only publication verification
@@ -120,6 +120,7 @@ See [`publication/VERSIONING.md`](publication/VERSIONING.md) for the tag naming 
 | Release tag | `wm-v1.1.0` |
 | GitHub release | Witnessability Model 1.1 |
 | Zenodo deposit | made — new version under the same concept DOI |
+| SSRN record | [6994720](https://ssrn.com/abstract=6994720) — revised to 1.1 on 2026-08-17; see `publication/SSRN-REVISION.md` |
 | Licensing | CC BY 4.0 (paper) · Apache-2.0 (software) — map in `LICENSES/NOTICE.md` |
 
 Release state is machine-readable in

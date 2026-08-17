@@ -1,5 +1,8 @@
 # Zenodo publication workflow
 
+The other external channel is SSRN; the procedure actually executed there is in
+[`SSRN-REVISION.md`](SSRN-REVISION.md).
+
 The process for depositing a Witnessability Model release on Zenodo. It has been followed once, for
 WM 1.1, and the deposit it produced is `10.5281/zenodo.21970802`.
 
