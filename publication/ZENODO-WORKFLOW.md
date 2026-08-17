@@ -1,9 +1,10 @@
 # Zenodo publication workflow
 
-Intended process for depositing a Witnessability Model release on Zenodo.
+The process for depositing a Witnessability Model release on Zenodo. It has been followed once, for
+WM 1.1, and the deposit it produced is `10.5281/zenodo.21970802`.
 
-**Nothing in this document is executed automatically. No Zenodo deposit has been performed under the
-task that created this repository.**
+**Nothing here is executed automatically.** Every deposit step is performed by a human, in a browser,
+holding credentials this repository does not have and must never hold.
 
 ## 1. Concept DOI vs version DOI
 
@@ -13,14 +14,17 @@ These are different objects and are never used interchangeably.
 | --- | --- | --- |
 | Identifies | the *record line* across all versions | one *specific deposited artifact* |
 | Resolves to | the latest version | that exact version, forever |
-| Current value | `10.5281/zenodo.21824435` | `10.5281/zenodo.21824436` (WM 1.0) |
+| Current value | `10.5281/zenodo.21824435` | `10.5281/zenodo.21970802` (WM 1.1); `10.5281/zenodo.21824436` (WM 1.0) |
 | Changes on new version | never | **always** — a new version DOI is minted |
 | Cite in the paper for "this work" | concept DOI | — |
 | Cite for "the exact artifact reviewed" | — | version DOI |
 
-Verified against the Zenodo public API on import (see `WM-1.0-HISTORICAL-BASELINE.json` for the
-retrieval record). A future WM 1.1 deposit **must** reuse the same concept DOI by depositing a *new
-version* of the existing record, not by creating a new record.
+Verified against the Zenodo public API on import; the retrieval record is
+[`../releases/1.0/RELEASE-RECORD.md`](../releases/1.0/RELEASE-RECORD.md).
+
+The WM 1.1 deposit did reuse the line: record `21970802` carries concept DOI
+`10.5281/zenodo.21824435`, the one WM 1.0 established. Every later version must do the same — a *new
+version* of the existing record, never a new record.
 
 ## 2. Position in the pipeline
 
@@ -29,11 +33,12 @@ authorized GitHub release (tag + release artifact, digest frozen)
   → human opens the existing Zenodo record 21824435 (concept)
   → "New version"
   → upload the exact release artifact
-  → metadata from paper/witnessability-model/metadata.yaml
+  → metadata from paper/metadata.yaml
   → publish → new version DOI minted
   → retrieve record via public API
   → verify artifact digest + metadata
-  → record receipt in publication/receipts/
+  → run publication-verify.yml against the new record
+  → record the release identities in publication/RELEASE-STATE-PUBLIC.json
 ```
 
 Creating a **new record** instead of a **new version** breaks concept-DOI continuity and cannot be
@@ -82,10 +87,11 @@ Confirmed from fresh commands immediately before deposit:
 3. Assert: `files[0].size` equals the release artifact size and `files[0].checksum` MD5 equals the
    recorded MD5.
 4. Assert: creators, order, ORCIDs, version, licence, publication date.
-5. Write `publication/receipts/ZENODO-<version>-<date>.json` with the retrieval timestamp, the
-   record ID, both DOIs, and every asserted field.
-6. Update `releases/<version>/RELEASE-MANIFEST.json`: `version_doi`, `concept_doi`,
-   `external_verification_status`.
+5. Record the release identities — both DOIs, the artifact digest and the tag — in
+   `publication/RELEASE-STATE-PUBLIC.json`, and the artifact digests in
+   `releases/<version>/SHA256SUMS.txt`.
+6. Re-run `make verify`: it fails if the tracked copy of the released artifact stops matching the
+   digest the deposit carries.
 
 `.github/workflows/publication-verify.yml` performs steps 1–4 read-only. It has no Zenodo token and
 cannot deposit.

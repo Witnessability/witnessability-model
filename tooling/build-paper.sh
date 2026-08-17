@@ -11,7 +11,7 @@ set -euo pipefail
 
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 LOCK="$REPO/tooling/toolchain.lock.json"
-SRC="$REPO/paper/witnessability-model"
+SRC="$REPO/paper"
 OUT="$REPO/build"
 
 jqget() { python3 -c "import json,sys;print(json.load(open('$LOCK'))$1)"; }
@@ -118,7 +118,7 @@ cp "$STAGE/$JOBNAME.pdf" "$OUT/$JOBNAME.pdf"
 # Keep the LaTeX .log next to our driver log; QA parses the LaTeX one.
 cp "$STAGE/$JOBNAME.log" "$OUT/$JOBNAME.latex.log"
 
-python3 "$REPO/scripts/make-build-manifest.py" \
+python3 "$REPO/tooling/make-build-manifest.py" \
   --pdf "$OUT/$JOBNAME.pdf" \
   --platform "$PLATFORM" \
   --source-date-epoch "$SOURCE_DATE_EPOCH"

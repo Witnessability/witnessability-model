@@ -70,6 +70,6 @@ gated by `publication/RELEASE-POLICY.md` §5.
 
 Supersession is recorded, never enacted by deletion:
 
-- `releases/<version>/RELEASE-MANIFEST.json` carries a `supersedes` field naming the prior release
-  artifact by digest.
-- The superseded release record stays in place, unchanged, with its original receipts.
+- `releases/<version>/README.md` names the prior release and links its record, so the line is
+  readable in both directions.
+- The superseded release record stays in place, unchanged, artifact and digests included.

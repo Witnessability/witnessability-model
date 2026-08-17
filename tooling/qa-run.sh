@@ -7,7 +7,7 @@
 # glyphs is exactly what findings E-01 and H-02 turn on. The image pins the extractor along with
 # the engine, so a finding means the same thing on a laptop and on a runner.
 #
-# Usage: scripts/qa-run.sh [arguments passed through to scripts/qa.py]
+# Usage: tooling/qa-run.sh [arguments passed through to tooling/qa.py]
 
 set -euo pipefail
 
@@ -32,4 +32,4 @@ exec docker run --rm \
   -e LC_ALL=C.UTF-8 \
   -e LANG=C.UTF-8 \
   "$IMAGE_REF" \
-  python3 scripts/qa.py "$@"
+  python3 tooling/qa.py "$@"

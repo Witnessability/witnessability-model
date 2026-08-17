@@ -38,7 +38,7 @@ discoverability**, not a second edition:
 - **The GitHub release** is the distribution copy.
 - **This copy** is the discoverable one, bound into git history together with its digest.
 
-If the three ever disagree, Zenodo is authoritative. `scripts/verify-baselines.sh` fails the build
+If the three ever disagree, Zenodo is authoritative. `tooling/verify-baselines.sh` fails the build
 if the tracked copy stops matching the published digest, so a silent divergence cannot survive CI.
 
 ## Errata
@@ -51,7 +51,7 @@ above.
 ## Source
 
 The source this artifact was built from is in
-[`../../paper/witnessability-model/`](../../paper/witnessability-model/), at release commit
+[`../../paper/`](../../paper/), at release commit
 `e4f3985a`. The build is deterministic, and reproducing *this* artifact is a single command:
 
 ```

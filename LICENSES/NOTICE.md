@@ -18,8 +18,7 @@ tracked path to exactly one licence.
 | Path | What it is |
 | --- | --- |
 | `paper/` | Paper source: LaTeX, bibliography, metadata, changelogs |
-| `model/1.0/WM-1.0.pdf` | The published Version 1.0 artifact |
-| `releases/` | Released artifacts, their errata, digests and release records |
+| `releases/` | Published artifacts (1.0 and 1.1), their errata, digests and release records |
 | `publication/` | Release policy, versioning, external-publication workflows and records |
 | `README.md`, `LICENSES/NOTICE.md` | Repository documentation |
 
@@ -27,15 +26,14 @@ tracked path to exactly one licence.
 
 | Path | What it is |
 | --- | --- |
-| `scripts/` | Build, QA, verification and packaging tooling |
-| `tooling/` | Pinned toolchain definition, container build, reproducibility documentation |
+| `tooling/` | The build system: pinned toolchain and container definition, build, QA, verification and packaging scripts, and their documentation |
 | `.github/workflows/` | CI and publication-verification workflows |
 | `Makefile`, `.gitignore` | Build entry points and repository configuration |
 
 Every source file in the Apache-2.0 set carries an `SPDX-License-Identifier: Apache-2.0` line, so the
-licence travels with the file if it is copied out of the repository. Four cannot: JSON admits no
-comments, so `tooling/toolchain.lock.json` and the three JSON records under `publication/` are
-governed by this map alone.
+licence travels with the file if it is copied out of the repository. Three cannot: JSON admits no
+comments, so `tooling/toolchain.lock.json`, `tooling/known-findings.json` and
+`publication/RELEASE-STATE-PUBLIC.json` are governed by this map alone.
 
 ## Attribution under CC BY 4.0
 

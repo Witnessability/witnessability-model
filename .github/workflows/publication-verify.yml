@@ -3,7 +3,7 @@ name: Publication verification (read-only)
 
 # Verifies what an external venue actually published, against what this repository released.
 # It reads. It never submits, deposits, mints, or edits anything, and it holds no credential:
-# both Zenodo record retrieval and SSRN page retrieval are public, unauthenticated operations.
+# Zenodo record retrieval is a public, unauthenticated operation.
 #
 # Run it after a human has completed a publication step.
 
@@ -85,22 +85,9 @@ jobs:
           RID: ${{ inputs.zenodo_record_id }}
           WANT_MD5: ${{ inputs.expected_md5 }}
 
-      - name: SSRN verification is manual
-        run: |
-          cat <<'EOF'
-          SSRN exposes no public API suitable for automated verification, and scripted retrieval of
-          its pages is not a supported operation. SSRN verification is therefore performed by a
-          human following publication/SSRN-WORKFLOW.md §6:
-
-            1. download the published PDF from abstract 6994720
-            2. shasum -a 256 the downloaded file
-            3. compare with the release digest
-            4. record the result in publication/receipts/
-
-          This step is a reminder, not a check. It does not assert an SSRN state.
-          EOF
 
       - name: Record expectation
         run: |
           echo "expected artifact sha256: ${{ inputs.expected_sha256 }}"
-          echo "A receipt must be committed to publication/receipts/ for this verification to count."
+          echo "This run is the record: its log is the retrieval evidence, and the release identities"
+          echo "it checks against live in publication/RELEASE-STATE-PUBLIC.json."

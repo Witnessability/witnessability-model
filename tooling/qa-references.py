@@ -46,8 +46,8 @@ def parse_bib(text: str) -> dict[str, dict]:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--bib", default=str(REPO / "paper/witnessability-model/bibliography/references.bib"))
-    ap.add_argument("--tex", default=str(REPO / "paper/witnessability-model/src/main.tex"))
+    ap.add_argument("--bib", default=str(REPO / "paper/bibliography/references.bib"))
+    ap.add_argument("--tex", default=str(REPO / "paper/src/main.tex"))
     ap.add_argument("--json-out")
     args = ap.parse_args()
 

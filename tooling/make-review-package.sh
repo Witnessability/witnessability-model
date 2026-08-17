@@ -27,8 +27,8 @@ for f in QA-REPORT.json QA-SEMANTIC.json REFS-REPORT.json; do
   [[ -f "build/$f" ]] && cp "build/$f" "$OUT/reports/"
 done
 
-cp paper/witnessability-model/CHANGELOG-WM-1.0-to-1.1.md "$OUT/documents/"
-cp paper/witnessability-model/CHANGELOG.md                "$OUT/documents/paper-CHANGELOG.md"
+cp paper/CHANGELOG-WM-1.0-to-1.1.md "$OUT/documents/"
+cp paper/CHANGELOG.md                "$OUT/documents/paper-CHANGELOG.md"
 cp publication/RELEASE-STATE-PUBLIC.json                  "$OUT/documents/"
 cp publication/VERSIONING.md                              "$OUT/documents/"
 cp tooling/REPRODUCIBILITY.md                             "$OUT/documents/"
@@ -53,9 +53,8 @@ else
 fi
 
 # Baseline comparison, so the reviewer never has to take the delta on trust.
-if [[ -f model/1.1/WM-1.1.pdf ]]; then
-  cp model/1.1/WM-1.1.pdf "$OUT/BASELINE-WM-1.1.pdf"
-  diff -u model/1.1/WM-1.1.tex paper/witnessability-model/src/main.tex > "$OUT/source-delta.diff" || true
+if [[ -f releases/1.1/WM-1.1.pdf ]]; then
+  cp releases/1.1/WM-1.1.pdf "$OUT/BASELINE-WM-1.1.pdf"
 fi
 
 python3 - "$OUT" "$JOBNAME" <<'PY'
@@ -77,8 +76,8 @@ manifest = {
         "pdf": f"{jobname}.pdf",
         "pdf_sha256": sha(out / f"{jobname}.pdf"),
         "pdf_bytes": (out / f"{jobname}.pdf").stat().st_size,
-        "source_sha256": sha(repo / "paper/witnessability-model/src/main.tex"),
-        "bibliography_sha256": sha(repo / "paper/witnessability-model/bibliography/references.bib"),
+        "source_sha256": sha(repo / "paper/src/main.tex"),
+        "bibliography_sha256": sha(repo / "paper/bibliography/references.bib"),
     },
     "baseline": (
         {

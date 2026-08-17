@@ -21,40 +21,40 @@ help:
 all: verify semantic refs paper qa
 
 toolchain:
-	./scripts/lock-toolchain.sh
+	./tooling/lock-toolchain.sh
 
 paper:
-	./scripts/build-paper.sh
+	./tooling/build-paper.sh
 
 qa:
 	@test -f build/$(JOBNAME).pdf || { echo "no build/$(JOBNAME).pdf — run 'make paper' first" >&2; exit 2; }
-	./scripts/qa-run.sh --pdf build/$(JOBNAME).pdf --log build/$(JOBNAME).latex.log \
+	./tooling/qa-run.sh --pdf build/$(JOBNAME).pdf --log build/$(JOBNAME).latex.log \
 	        --json-out build/QA-REPORT.json
 
 qa-baseline:
 	@mkdir -p build
-	./scripts/qa-run.sh --pdf model/1.1/WM-1.1.pdf --baseline \
+	./tooling/qa-run.sh --pdf releases/1.1/WM-1.1.pdf --baseline \
 	        --json-out build/QA-BASELINE.json
 
 refs:
-	python3 scripts/qa-references.py
+	python3 tooling/qa-references.py
 
 semantic:
 	@mkdir -p build
-	python3 scripts/qa-semantic.py --json-out build/QA-SEMANTIC.json
+	python3 tooling/qa-semantic.py --json-out build/QA-SEMANTIC.json
 
 verify:
-	./scripts/verify-baselines.sh
+	./tooling/verify-baselines.sh
 
 secrets:
-	./scripts/scan-secrets.sh
+	./tooling/scan-secrets.sh
 
 review-package:
 	@test -f build/$(JOBNAME).pdf || { echo "no build/$(JOBNAME).pdf — run 'make paper' first" >&2; exit 2; }
-	./scripts/make-review-package.sh
+	./tooling/make-review-package.sh
 
 clean:
 	rm -rf build
 
 reproduce-release:
-	./scripts/reproduce-release.sh
+	./tooling/reproduce-release.sh

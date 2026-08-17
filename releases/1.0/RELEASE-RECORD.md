@@ -5,9 +5,10 @@ it documents an existing release, it does not constitute one, and it does not re
 
 | Field | Value | Evidence |
 | ----- | ----- | -------- |
+| Title | *Toward a Witnessability Model for AI and Software Execution Systems* — A Boundary-Based Framework for Classifying Execution Evidence | Zenodo public API |
 | Model version | 1.0 | — |
 | Release status | PUBLISHED | Zenodo record 21824436 |
-| Artifact | `model/1.0/WM-1.0.pdf` | in-repo, immutable |
+| Artifact | `releases/1.0/WM-1.0.pdf` | in-repo, immutable |
 | Bytes | 213 922 | measured |
 | SHA-256 | `295eb6cbe3c9f65f3678253dd803b200b3d36632470fdb592f83279b9379389d` | measured |
 | MD5 | `e7fb384458653cccbd254c061915b1e3` | measured; matches Zenodo's reported checksum |
@@ -22,7 +23,7 @@ it documents an existing release, it does not constitute one, and it does not re
 
 ## Verification performed at import
 
-The bytes in `model/1.0/WM-1.0.pdf` were checked against the Zenodo deposit by size **and** MD5, and
+The bytes in `releases/1.0/WM-1.0.pdf` were checked against the Zenodo deposit by size **and** MD5, and
 both matched exactly. Six independent on-disk copies were hashed and were byte-identical.
 
 The artifact begins with the `%PDF` magic. This matters: a page-render ZIP has circulated with a

@@ -11,7 +11,7 @@ The fallback deliberately supports no more than that. Anything outside the subse
 than being silently misparsed — a metadata file that parses into the wrong shape would make every
 identity gate downstream meaningless.
 
-Self-test:  python3 scripts/metayaml.py paper/witnessability-model/metadata.yaml
+Self-test:  python3 tooling/metayaml.py paper/metadata.yaml
 """
 
 from __future__ import annotations
