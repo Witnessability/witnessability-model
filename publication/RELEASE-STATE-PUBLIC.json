@@ -78,7 +78,6 @@
       "spdx": "CC-BY-4.0",
       "paths": [
         "paper/",
-        "model/",
         "releases/",
         "publication/",
         "README.md",
@@ -90,7 +89,6 @@
       "license": "Apache License 2.0",
       "spdx": "Apache-2.0",
       "paths": [
-        "scripts/",
         "tooling/",
         ".github/workflows/",
         "Makefile",

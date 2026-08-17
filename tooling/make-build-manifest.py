@@ -17,7 +17,7 @@ import pathlib
 import subprocess
 
 REPO = pathlib.Path(__file__).resolve().parent.parent
-SRC = REPO / "paper/witnessability-model"
+SRC = REPO / "paper"
 
 
 def sha256(path: pathlib.Path) -> str:
@@ -46,7 +46,7 @@ def main() -> int:
     for rel in ("src/main.tex", "bibliography/references.bib", "metadata.yaml"):
         p = SRC / rel
         if p.exists():
-            source_files[f"paper/witnessability-model/{rel}"] = {
+            source_files[f"paper/{rel}"] = {
                 "bytes": p.stat().st_size,
                 "sha256": sha256(p),
             }
@@ -97,7 +97,7 @@ def main() -> int:
         },
 
         "build": {
-            "command": "scripts/build-paper.sh",
+            "command": "tooling/build-paper.sh",
             "container_command": (
                 f"latexmk -{lock['engine']} -interaction=nonstopmode -halt-on-error "
                 f"-file-line-error -jobname={lock['jobname']} {lock['jobname']}.tex"

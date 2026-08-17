@@ -12,7 +12,7 @@ accompanying paper.
 | Cite the work as a whole | [10.5281/zenodo.21824435](https://doi.org/10.5281/zenodo.21824435) — concept DOI, always resolves to the latest version |
 | Errata | [`releases/1.1/WM-1.1-ERRATA-SCHEME-B-FINAL.md`](releases/1.1/WM-1.1-ERRATA-SCHEME-B-FINAL.md) |
 | Release | tag [`wm-v1.1.0`](https://github.com/Witnessability/witnessability-model/releases/tag/wm-v1.1.0), released 2026-08-16 |
-| Source | [`paper/witnessability-model/src/main.tex`](paper/witnessability-model/src/main.tex) |
+| Source | [`paper/src/main.tex`](paper/src/main.tex) |
 | Build it yourself | `make reproduce-release` — rebuilds the released PDF and checks it is the published bytes |
 | Release record | [`releases/1.1/README.md`](releases/1.1/README.md) |
 
@@ -55,31 +55,27 @@ Every one of those four is a distinct object with its own identity (its own SHA-
 location, and its own lifecycle. They are never conflated, never overwritten with one another, and
 never silently promoted from one role to the next.
 
-| Identity                     | Lives in                        | Mutable?                  |
-| ---------------------------- | ------------------------------- | ------------------------- |
-| Source                       | `paper/witnessability-model/`   | yes, via reviewed changes |
-| Import baseline              | `model/<version>/`              | **never**                 |
-| Build output                 | `build/` (git-ignored)          | regenerated               |
-| Release artifact             | `releases/<version>/`           | **never**, once released  |
-| External publication record  | `publication/`                  | append-only               |
+| Identity                     | Lives in                | Mutable?                  |
+| ---------------------------- | ----------------------- | ------------------------- |
+| Source                       | `paper/`                | yes, via reviewed changes |
+| Build output                 | `build/` (git-ignored)  | regenerated               |
+| Release artifact             | `releases/<version>/`   | **never**, once released  |
+| External publication record  | `publication/`          | append-only               |
 
 ## Layout
 
 ```
-model/1.0/WM-1.0.pdf            the published Version 1.0 artifact, kept for provenance
-paper/witnessability-model/     working source lineage
+paper/                          the paper's working source
   src/main.tex                  paper source
   bibliography/references.bib   bibliography source of truth
-  figures/                      figure sources (none yet; the paper is TikZ-only)
   metadata.yaml                 title, authors, ORCIDs, keywords, version identity
   CHANGELOG.md                  paper-revision changelog
-releases/                       released artifacts and their records, by version
-  1.0/                          record of the published 1.0 release
+releases/                       published artifacts and their records, by version
+  1.0/                          the published 1.0 PDF and its retrospective record
   1.1/                          the released PDF, its errata and their digests
+publication/                    release policy, versioning, deposit procedure, public release state
+tooling/                        the build system: pinned toolchain, build and QA scripts
 LICENSES/                       licence texts and the path-to-licence map
-tooling/                        pinned toolchain definition (image + digest)
-scripts/                        build and QA entry points
-publication/                    governance, workflows, baselines, QA reports
 .github/workflows/              CI and read-only publication verification
 build/                          build output only — git-ignored, never a source
 ```
@@ -136,8 +132,8 @@ Two kinds of work live here and they are licensed separately:
 
 | | Licence | Covers |
 | --- | --- | --- |
-| **Paper and publication record** | [CC BY 4.0](LICENSES/CC-BY-4.0.txt) | `paper/`, `model/`, `releases/`, `publication/`, this README |
-| **Software** | [Apache-2.0](LICENSES/Apache-2.0.txt) | `scripts/`, `tooling/`, `.github/workflows/`, `Makefile` |
+| **Paper and publication record** | [CC BY 4.0](LICENSES/CC-BY-4.0.txt) | `paper/`, `releases/`, `publication/`, this README |
+| **Software** | [Apache-2.0](LICENSES/Apache-2.0.txt) | `tooling/`, `.github/workflows/`, `Makefile` |
 
 No single licence covers the repository, so there is no top-level `LICENSE` file and GitHub's licence
 badge may show nothing — the structure is not bent to satisfy automatic detection.

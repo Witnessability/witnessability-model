@@ -30,7 +30,7 @@ echo "== reproducing the released WM $VERSION artifact"
 echo "   recorded SOURCE_DATE_EPOCH : $EPOCH"
 echo "   expected SHA-256           : $EXPECTED"
 
-SOURCE_DATE_EPOCH="$EPOCH" "$REPO/scripts/build-paper.sh" >/dev/null
+SOURCE_DATE_EPOCH="$EPOCH" "$REPO/tooling/build-paper.sh" >/dev/null
 
 JOBNAME="$(python3 -c "import json;print(json.load(open('$REPO/tooling/toolchain.lock.json'))['jobname'])")"
 BUILT="$REPO/build/$JOBNAME.pdf"

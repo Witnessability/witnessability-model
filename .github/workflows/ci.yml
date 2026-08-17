@@ -36,22 +36,22 @@ jobs:
           echo "JOBNAME=$(python3 -c "import json;print(json.load(open('tooling/toolchain.lock.json'))['jobname'])")" >> "$GITHUB_ENV"
 
       - name: Secret scan
-        run: ./scripts/scan-secrets.sh
+        run: ./tooling/scan-secrets.sh
 
       - name: Verify published baselines are unmodified
-        run: ./scripts/verify-baselines.sh
+        run: ./tooling/verify-baselines.sh
 
       - name: metadata.yaml parses to the expected shape
-        run: python3 scripts/metayaml.py paper/witnessability-model/metadata.yaml > /dev/null
+        run: python3 tooling/metayaml.py paper/metadata.yaml > /dev/null
 
       - name: Bibliography gates
-        run: python3 scripts/qa-references.py --json-out refs-report.json
+        run: python3 tooling/qa-references.py --json-out refs-report.json
 
       # Runs on the source, so it gates a semantic regression before a build is even attempted.
       - name: Semantic invariant gates (NO-STRUCK-REDUCTIO and friends)
         run: |
           mkdir -p build
-          python3 scripts/qa-semantic.py --json-out build/QA-SEMANTIC.json
+          python3 tooling/qa-semantic.py --json-out build/QA-SEMANTIC.json
 
       # The toolchain is built from this repository's Dockerfile, pinned to a base image digest.
       # No ambient TeX is used, on a runner or anywhere else.
@@ -61,7 +61,7 @@ jobs:
       - name: Build paper
         env:
           BUILD_PLATFORM: linux/amd64
-        run: ./scripts/build-paper.sh
+        run: ./tooling/build-paper.sh
 
       # Gates run inside the pinned image, not against the runner's poppler: the extraction
       # findings depend on the extractor's handling of unmapped glyphs, so its version is pinned
@@ -70,7 +70,7 @@ jobs:
         env:
           BUILD_PLATFORM: linux/amd64
         run: |
-          ./scripts/qa-run.sh \
+          ./tooling/qa-run.sh \
             --pdf build/${JOBNAME}.pdf \
             --log build/${JOBNAME}.latex.log \
             --json-out build/QA-REPORT.json
@@ -82,7 +82,7 @@ jobs:
           cp build/${JOBNAME}.pdf /tmp/first.pdf
           echo "amd64 digest: $(sha256sum build/${JOBNAME}.pdf | cut -d' ' -f1)"
           echo "SOURCE_DATE_EPOCH used: $(git log -1 --format=%ct -- paper/)"
-          ./scripts/build-paper.sh
+          ./tooling/build-paper.sh
           if cmp -s /tmp/first.pdf build/${JOBNAME}.pdf; then
             echo "same-environment reproducibility: BYTE-IDENTICAL"
           else
@@ -95,7 +95,7 @@ jobs:
       - name: The published artifact is still reproducible from source
         env:
           BUILD_PLATFORM: linux/amd64
-        run: ./scripts/reproduce-release.sh
+        run: ./tooling/reproduce-release.sh
 
       - name: Upload build outputs
         if: always()

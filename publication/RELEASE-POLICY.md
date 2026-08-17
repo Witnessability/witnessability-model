@@ -14,7 +14,7 @@ SOURCE  ≠  BUILD OUTPUT  ≠  RELEASE ARTIFACT  ≠  EXTERNAL PUBLICATION RECO
 
 | Identity | Definition | Location | Immutable |
 | --- | --- | --- | --- |
-| **Source** | Text a human edits: `.tex`, `.bib`, figure sources, metadata | `paper/witnessability-model/` | no — changes via reviewed PR |
+| **Source** | Text a human edits: `.tex`, `.bib`, figure sources, metadata | `paper/` | no — changes via reviewed PR |
 | **Import baseline** | Exact bytes received from an upstream process, recorded on arrival | `model/<version>/` | **yes, absolutely** |
 | **Build output** | What the pinned toolchain produces from a given source tree | `build/` (git-ignored) | regenerated at will |
 | **Release artifact** | A build output that an authorized release has frozen | `releases/<version>/` | **yes, once released** |
@@ -62,8 +62,9 @@ triggered by a workflow:
 - applying a founder signature;
 - clearing a release hold.
 
-`.github/workflows/release.yml` exists in inert form so that its gates can be reviewed before it is
-ever enabled. It must not be enabled until §5 is satisfied.
+There is no automated release path here, inert or otherwise. A release is performed by the founder,
+by hand, once §5 holds. No workflow in this repository can tag, deposit or publish, so none needs
+disabling to keep it that way.
 
 ## 4. Evidence states
 
@@ -112,7 +113,7 @@ Absent any one of these, the correct terminal state is **NOT READY**, and the re
 
 No publication credential is required to build, test, or prepare a release candidate in this
 repository. The repository must never contain SSRN credentials, Zenodo tokens, GitHub PATs, or DOI
-credentials, in any form, including examples and test fixtures. `scripts/scan-secrets.sh` runs in CI
+credentials, in any form, including examples and test fixtures. `tooling/scan-secrets.sh` runs in CI
 and must be green before any PR is merged.
 
 ## 8. Deviations

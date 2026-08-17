@@ -22,7 +22,7 @@ admits verification as an alternative to control), and exempts an occurrence onl
 sentence carries an explicit supersession marker. Every exemption is printed with its sentence, so
 a reviewer sees exactly what was allowed through and why.
 
-Usage: python3 scripts/qa-semantic.py [--tex PATH] [--json-out PATH]
+Usage: python3 tooling/qa-semantic.py [--tex PATH] [--json-out PATH]
 """
 
 from __future__ import annotations
@@ -34,7 +34,7 @@ import re
 import sys
 
 REPO = pathlib.Path(__file__).resolve().parent.parent
-DEFAULT_TEX = REPO / "paper/witnessability-model/src/main.tex"
+DEFAULT_TEX = REPO / "paper/src/main.tex"
 
 # A sentence is about the ceiling if it talks about the bound itself.
 CEILING_CONTEXT = re.compile(

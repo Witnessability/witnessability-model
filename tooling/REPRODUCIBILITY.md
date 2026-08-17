@@ -38,8 +38,8 @@ This is not a defect in the baseline and not a failure of the pipeline. It is th
 pipeline exists: from the first build produced here onward, the environment **is** recorded, in
 `build/BUILD-MANIFEST.json`, and the question becomes answerable.
 
-The imported baseline therefore keeps its own identity in `model/1.1/` and is never claimed to be a
-pipeline output.
+The imported baseline is therefore not tracked here at all: it is identified by digest in
+`paper/CHANGELOG.md`, and nothing in this repository is claimed to be it.
 
 ## Reproducing a release is not the same as building the source
 
@@ -98,7 +98,7 @@ If the name is ever to change, it changes for the *next* release, together with 
 - **Fonts.** Latin Modern from the `lmodern` package, embedded as subsets. Font subsetting is a
   known source of nondeterminism across TeX versions; this is why the toolchain is pinned rather
   than merely specified.
-- **The QA extractor is pinned too.** `scripts/qa-run.sh` runs the gates inside the same image, so
+- **The QA extractor is pinned too.** `tooling/qa-run.sh` runs the gates inside the same image, so
   `pdftotext` has one version everywhere. Findings E-01 and H-02 turn on how the extractor treats
   unmapped glyphs, so a gate running against whatever poppler a machine happens to have is not a
   gate.
@@ -142,8 +142,8 @@ The comparison requires the same commit built on:
 The procedure:
 
 ```bash
-BUILD_PLATFORM=linux/arm64 ./scripts/build-paper.sh && cp build/WM-1.1.pdf /tmp/arm64.pdf
-BUILD_PLATFORM=linux/amd64 ./scripts/build-paper.sh && cp build/WM-1.1.pdf /tmp/amd64.pdf
+BUILD_PLATFORM=linux/arm64 ./tooling/build-paper.sh && cp build/WM-1.1.pdf /tmp/arm64.pdf
+BUILD_PLATFORM=linux/amd64 ./tooling/build-paper.sh && cp build/WM-1.1.pdf /tmp/amd64.pdf
 cmp /tmp/arm64.pdf /tmp/amd64.pdf
 ```
 

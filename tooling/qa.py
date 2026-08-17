@@ -4,18 +4,18 @@
 
 Run against a built PDF plus the LaTeX log it came from:
 
-    python3 scripts/qa.py --pdf build/WM-1.1.pdf --log build/WM-1.1.latex.log
+    python3 tooling/qa.py --pdf build/WM-1.1.pdf --log build/WM-1.1.latex.log
 
 Or against the imported baseline, which has no log:
 
-    python3 scripts/qa.py --pdf model/1.1/WM-1.1.pdf --baseline
+    python3 tooling/qa.py --pdf releases/1.1/WM-1.1.pdf --baseline
 
 Severities
     ERROR   fails the gate (exit 1)
     WARN    reported, does not fail
     INFO    recorded for the record
 
-A finding listed in publication/known-findings.json is downgraded ERROR->WARN and annotated with the
+A finding listed in tooling/known-findings.json is downgraded ERROR->WARN and annotated with the
 document that analyses it. That is a deliberate, visible exception — never a silent suppression.
 Removing a defect removes its entry; the gate then enforces it as ERROR.
 
@@ -288,8 +288,8 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--pdf", required=True)
     ap.add_argument("--log", help="LaTeX .log from the same build")
-    ap.add_argument("--metadata", default=str(REPO / "paper/witnessability-model/metadata.yaml"))
-    ap.add_argument("--known-findings", default=str(REPO / "publication/known-findings.json"))
+    ap.add_argument("--metadata", default=str(REPO / "paper/metadata.yaml"))
+    ap.add_argument("--known-findings", default=str(REPO / "tooling/known-findings.json"))
     ap.add_argument("--baseline", action="store_true",
                     help="PDF is an imported baseline with no log and no metadata guarantee")
     ap.add_argument("--json-out")
