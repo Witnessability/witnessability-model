@@ -41,6 +41,22 @@ pipeline exists: from the first build produced here onward, the environment **is
 The imported baseline therefore keeps its own identity in `model/1.1/` and is never claimed to be a
 pipeline output.
 
+## Reproducing a release is not the same as building the source
+
+`SOURCE_DATE_EPOCH` is derived from the last commit that touched `paper/`. For building the current
+source that is exactly right — the output moves when the paper moves, and not otherwise.
+
+It is the wrong input for reproducing a *published* artifact. Any later commit touching `paper/`
+advances the timestamp and therefore the bytes, even a commit that changes no text at all: removing
+an empty `figures/.gitkeep` placeholder moved the epoch from `1786879871` to `1786923086` and the
+built PDF from `7d62e326…167fb902` to `672efce0…72be2975`. Same source, same toolchain, different
+bytes.
+
+So the release's timestamp is recorded *with the release*, in
+`publication/RELEASE-STATE-PUBLIC.json` under `release.reproduction`, and `make reproduce-release`
+builds with it and fails unless the result is the published bytes. Reproducing what was published is
+a claim this repository can check on demand rather than a property it hopes it still has.
+
 ## A constraint that must not be tidied away
 
 **The build jobname is load-bearing for the released artifact.** `tooling/toolchain.lock.json` sets

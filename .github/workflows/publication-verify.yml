@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 name: Publication verification (read-only)
 
 # Verifies what an external venue actually published, against what this repository released.

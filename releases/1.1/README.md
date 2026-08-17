@@ -52,8 +52,19 @@ above.
 
 The source this artifact was built from is in
 [`../../paper/witnessability-model/`](../../paper/witnessability-model/), at release commit
-`e4f3985a`. The build is deterministic: `make paper` reproduces this PDF byte for byte on
-`linux/amd64` and `linux/arm64`. See [`../../tooling/REPRODUCIBILITY.md`](../../tooling/REPRODUCIBILITY.md).
+`e4f3985a`. The build is deterministic, and reproducing *this* artifact is a single command:
+
+```
+make reproduce-release
+```
+
+It rebuilds from source at the timestamp recorded with the release and fails unless the result is
+these exact bytes. Verified on `linux/amd64` and `linux/arm64`.
+
+Plain `make paper` is not the same operation: it builds the current source, taking its timestamp from
+the last commit that touched `paper/`, so any later commit there changes the output bytes. That is
+correct for building what the tree says now and useless for reproducing what was published — hence
+the separate command. See [`../../tooling/REPRODUCIBILITY.md`](../../tooling/REPRODUCIBILITY.md).
 
 ## Version 1.0
 

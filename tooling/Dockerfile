@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 # Repository-owned TeX toolchain for the Witnessability Model paper.
 #
 # Why a repository-owned image rather than a published TeX Live image:

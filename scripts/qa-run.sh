@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# SPDX-License-Identifier: Apache-2.0
 # Run the QA gates inside the pinned toolchain image.
 #
 # The gates are never run against the host's poppler. A text-extraction gate whose extractor

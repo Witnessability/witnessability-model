@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# SPDX-License-Identifier: Apache-2.0
 # Fail if anything that looks like a publication credential is present in the tree.
 # No credential is needed to build, test, or prepare a release candidate here, so any hit is a
 # defect regardless of whether the value is live.
