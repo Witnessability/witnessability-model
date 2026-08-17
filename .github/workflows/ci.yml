@@ -93,6 +93,8 @@ jobs:
           fi
 
       - name: The published artifact is still reproducible from source
+        env:
+          BUILD_PLATFORM: linux/amd64
         run: ./scripts/reproduce-release.sh
 
       - name: Upload build outputs

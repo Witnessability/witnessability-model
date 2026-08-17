@@ -57,6 +57,14 @@ So the release's timestamp is recorded *with the release*, in
 builds with it and fails unless the result is the published bytes. Reproducing what was published is
 a claim this repository can check on demand rather than a property it hopes it still has.
 
+## Platform default
+
+`BUILD_PLATFORM` selects the image architecture. Unset, the build now follows the host: a fixed
+default is a trap, because on the other architecture it builds an image the host cannot execute and
+the failure arrives as `exec /bin/sh: exec format error` from inside `apt`, which points at nothing.
+CI sets it explicitly on every step regardless, so the platform is stated rather than inferred where
+it matters. Cross-building stays possible and stays deliberate.
+
 ## A constraint that must not be tidied away
 
 **The build jobname is load-bearing for the released artifact.** `tooling/toolchain.lock.json` sets
